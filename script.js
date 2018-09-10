@@ -112,8 +112,33 @@ function removeTask(e) {
         // console.log(e.target);    
         if (confirm('Are you sure?')) {
             e.target.parentElement.parentElement.remove();    
+
+            //remove task from local storage
+            removeTaskFromLocalStorage(e.target.parentElement.parentElement);
         }
     }
+}
+
+//remove tasks from local storage
+function removeTaskFromLocalStorage(taskItem) {
+    // console.log(taskItem)
+    let tasks;
+
+    if (localStorage.getItem('tasks') === null) {
+        tasks = [];
+    } else {
+        //localstorage only stores strings, convert string to array 
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+    //loop through tasks
+    tasks.forEach(function (task,index) {
+        //check to see taskItem text content matches the current task in iteration
+        if (taskItem.textContent === task) {
+            tasks.splice(index, 1);
+        }
+    });
+    //convert data back to a string
+    localStorage.setItem('tasks',JSON.stringify(tasks));
 }
 
 //Clear tasks
