@@ -12,6 +12,7 @@ loadEventListeners();
 function loadEventListeners() {
     //Add task event
     form.addEventListener('submit', addTask);
+
 }
 
 //Add Task
@@ -19,7 +20,28 @@ function addTask(e) {
     if (taskInput.value === '') {
         alert('Add a task');
     }
+    
+    //create li element
+    const li = document.createElement('li');
+    //add a class
+    li.className = 'collection-item';
+    //create text node and append to li
+    li.appendChild(document.createTextNode(taskInput.value));
+    //create new link element
+    const link = document.createElement('a');
+    //add a class
+    link.className = 'delete-item secondary-content';
+    //add icon html
+    link.innerHTML = '<i class="fa fa-remove"></i>';
+    //append the link to the li
+    li.appendChild(link);
+    //append the li to ul
+    taskList.appendChild(li);
 
+    //clear the input
+    taskInput.value = ''
+
+    console.log(li)
 
     e.preventDefault();
 }
