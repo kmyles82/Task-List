@@ -10,6 +10,9 @@ loadEventListeners();
 
 //Load all event listeners
 function loadEventListeners() {
+    //retrieve data from localstorage
+    //DOM load event
+    document.addEventListener('DOMContentLoaded', getTasks);
     //Add task event
     form.addEventListener('submit', addTask);
     //remove task event
@@ -17,8 +20,40 @@ function loadEventListeners() {
     //clear task event
     clearBtn.addEventListener('click', clearTasks);
     //filter tasks
-    filter.addEventListener('keyup', filterTasks)
+    filter.addEventListener('keyup', filterTasks);
+    
 }
+//Get taks from LocalStorage
+function getTasks() {
+    let tasks;
+
+    if (localStorage.getItem('tasks') === null) {
+        tasks = [];
+    } else {
+        //localstorage only stores strings, convert string to array 
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+    //loop through tasks store in local storage and create dom element for each task
+    tasks.forEach(function (task) {
+        //create li element
+        const li = document.createElement('li');
+        //add a class
+        li.className = 'collection-item';
+        //create text node and append to li
+        li.appendChild(document.createTextNode(task));
+        //create new link element
+        const link = document.createElement('a');
+        //add a class
+        link.className = 'delete-item secondary-content';
+        //add icon html
+        link.innerHTML = '<i class="fa fa-remove"></i>';
+        //append the link to the li
+        li.appendChild(link);
+        //append the li to ul
+        taskList.appendChild(li);
+    });
+}
+
 
 //Add Task
 function addTask(e) {
@@ -43,12 +78,31 @@ function addTask(e) {
     //append the li to ul
     taskList.appendChild(li);
 
+    //store in localstorage
+    storeTaskInLocalStorage(taskInput.value);
+
     //clear the input
     taskInput.value = ''
 
-    console.log(li)
+    // console.log(li)
 
     e.preventDefault();
+}
+
+//store to local storage
+function storeTaskInLocalStorage(task) {
+    let tasks;
+
+    if (localStorage.getItem('tasks') === null) {
+        tasks = [];
+    } else {
+        //localstorage only stores strings, convert string to array 
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+
+    tasks.push(task)
+    //convert data back to a string
+    localStorage.setItem('tasks', JSON.stringify(tasks))
 }
 
 //Remove task
@@ -78,7 +132,6 @@ function filterTasks(e) {
     //grab all list items and loop through
     document.querySelectorAll('.collection-item').forEach(function (task) {
         const item = task.firstChild.textContent;
-
         //check if there is a match for letter typed in
         if (item.toLowerCase().indexOf(text) != -1) {
             task.style.display = 'block';
@@ -89,3 +142,4 @@ function filterTasks(e) {
 
     console.log(text)
 }
+
